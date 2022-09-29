@@ -13,7 +13,7 @@ class LinearRegression:
 
         self.xs = xs
         self.ys = ys
-        self.slope = 0
+        self.slope = ys[0]/xs[0]
         self.slope_hist = []
 
     def loss(self, slope=None):
@@ -68,7 +68,7 @@ def main():
     adelie_flipper_len_mm = np.loadtxt("adelie.csv", delimiter=',', skiprows=1, usecols=1)
 
     adelie_regress = LinearRegression(adelie_bill_len_mm, adelie_flipper_len_mm)
-    adelie_regress.fit()
+    adelie_regress.fit(debug=True)
     adelie_regress.data_plot()
     adelie_regress.slope_hist_plot()
     print(adelie_regress.slope_hist)
