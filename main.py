@@ -15,22 +15,46 @@ class LinearRegression:
         self.ys = ys
         self.slope = 0
 
-    def loss(self):
-        pass
+    def loss(self, slope=None):
+        if slope is None:
+            slope = self.slope
 
-    def fit(self):
-        pass
+        return np.sum((slope*self.xs - self.ys)**2)
+
+    def fit(self, delta=1e-5, gamma=1, n_iter=30):
+        self.slope_hist = [self.slope]
+
+        for _ in range(n_iter):
+
+            gradient = (self.loss(self.slope+delta) - self.loss(self.slope-delta))/(2*delta)
+
+            while True:
+                new_slope = self.slope - gamma*gradient
+
+                if self.loss(new_slope) < self.loss(self.slope):
+                    self.slope = new_slope
+                    self.slope_hist.append(self.slope)
+                    break
+                else:
+                    gamma /= 2
 
     def predict(self, xs):
-        pass
+        return self.slope*xs
 
 
 def main():
     adelie_bill_len_mm = np.loadtxt("adelie.csv", delimiter=',', skiprows=1, usecols=0)
     adelie_flipper_len_mm = np.loadtxt("adelie.csv", delimiter=',', skiprows=1, usecols=1)
 
-    plt.plot(adelie_bill_len_mm, adelie_flipper_len_mm, '.')
+    adelie_regress = LinearRegression(adelie_bill_len_mm, adelie_flipper_len_mm)
+    adelie_regress.fit()
+    plt.plot(adelie_regress.slope_hist)
     plt.show()
+
+    #loss_xs = np.linspace(0, 10, 100)
+    #loss_ys = np.array([adelie_regress.loss(a) for a in loss_xs])
+    #plt.plot(loss_xs, loss_ys)
+    #plt.show()
 
 if __name__ == '__main__':
     main()
