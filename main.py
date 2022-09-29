@@ -14,6 +14,7 @@ class LinearRegression:
         self.xs = xs
         self.ys = ys
         self.slope = 0
+        self.slope_hist = []
 
     def loss(self, slope=None):
         if slope is None:
@@ -21,10 +22,10 @@ class LinearRegression:
 
         return np.sum((slope*self.xs - self.ys)**2)
 
-    def fit(self, delta=1e-5, gamma=1, max_iter=100, tol=1e-8):
+    def fit(self, delta=1e-5, gamma=1, max_iter=100, tol=1e-8, debug=False):
         self.slope_hist = [self.slope]
 
-        for iter in range(max_iter):
+        for i in range(max_iter):
 
             gradient = (self.loss(self.slope+delta) - self.loss(self.slope-delta))/(2*delta)
 
@@ -37,7 +38,8 @@ class LinearRegression:
                     break
                 else:
                     gamma /= 2
-                    print(f"Gamma reduced to {gamma} at iteration {iter}")
+                    if debug:
+                        print(f"Gamma reduced to {gamma} at iteration {i}")
 
             if (np.abs(self.slope_hist[-1] - self.slope_hist[-2]) / np.abs(self.slope_hist[-1])) < tol:
                 break
@@ -51,7 +53,6 @@ class LinearRegression:
         plt.xlabel("Iteration")
 
         plt.show()
-
 
     def data_plot(self):
         xrange = np.linspace(self.xs.min(), self.xs.max(), 100)
@@ -72,10 +73,11 @@ def main():
     adelie_regress.slope_hist_plot()
     print(adelie_regress.slope_hist)
 
-    #loss_xs = np.linspace(0, 10, 100)
-    #loss_ys = np.array([adelie_regress.loss(a) for a in loss_xs])
-    #plt.plot(loss_xs, loss_ys)
-    #plt.show()
+    # loss_xs = np.linspace(0, 10, 100)
+    # loss_ys = np.array([adelie_regress.loss(a) for a in loss_xs])
+    # plt.plot(loss_xs, loss_ys)
+    # plt.show()
+
 
 if __name__ == '__main__':
     main()
